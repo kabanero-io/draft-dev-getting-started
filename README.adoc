@@ -1,33 +1,17 @@
 ---
 permalink: /guides/dev-getting-started/
 ---
+:projectid: dev-getting-started
 :page-layout: guide
 :page-duration: 75 minutes
 :page-description: Workshop content for developers and solution architects getting started with Kabanero
 :page-tags: ['Appsody', 'Nodejs', 'Express', 'Collection']
 :page-title: Getting Started With Kabanero Development
-:page-related-guides: ['otheguidename', 'otheguidename2']
 :linkattrs:
 
-= Kabanero Developer Experience - Getting Started
-
-////
-Copyright 2019 IBM Corporation and others.
-
-Licensed undser the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http:www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-////
-
 :kabanero-collection: v0.2.0-beta1
+
+= Getting Started With Kabanero Development
 
 == What is Kabanero
 
@@ -180,7 +164,7 @@ time at the beginning of the workshop.
 
 [source, role='command']
 ```
-curl -sL https://github.com/gcharters/kabanero-dev-getting-started/releases/download/0.0.2/workshop-setup.sh | bash
+curl -sL https://github.com/gcharters/kabanero-dev-getting-started/releases/download/0.0.3/workshop-setup.sh | bash -s -- -p -l nodejs
 ```
 
 == Developing Cloud-native applications - Appsody
@@ -708,6 +692,7 @@ drwxr-xr-x  274 nastacio  staff   8768 Oct  3 17:55 node_modules
 drwxr-xr-x    3 nastacio  staff     96 Oct  3 14:41 test
 drwxr-xr-x   10 nastacio  staff    320 Oct  8 14:04 user-app
 ....
+
 
 These are the files for the project, including those provided by the
 stack. For example, the `+package.json+` has the core application definition 
@@ -1319,14 +1304,15 @@ Appsody to not download images that are already in the local repository:
 ```
 export APPSODY_PULL_POLICY=IFNOTPRESENT
 ```
+--
 
 [.tab_content.windows_section]
 --
 [source, role='command']
-[source, role='command']
 ```
 set APPSODY_PULL_POLICY=IFNOTPRESENT
 ```
+--
 
 It is now time to verify the changes from the perspective of the
 application developer. We can go back to the original application
@@ -1417,7 +1403,7 @@ for a simple stateless application or a more complex template with
 starter code for connecting to a remote database.
 
 In this scenario, we will inspect an alternative template with a
-postgresql database connection endpoint, then create and test an
+PostgreSQL database connection endpoint, then create and test an
 application starter using that template.
 
 We first need to create the alternative template, which will be based
@@ -1465,29 +1451,10 @@ inside the "devDependencies" block, as follows:
 
 [source, role="no_copy"]
 .package.json
-....
-{
-  "name": "nodejs-express-simple",
-  "version": "0.1.0",
-  "description": "Simple Node.js Express application",
-  "license": "Apache-2.0",
-  "main": "app.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/appsody/stacks.git",
-    "directory": "incubator/nodejs-express/templates/simple"
-  },
-  "scripts": {
-    "test": "mocha"
-  },
-  "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "~6.1.0",
-    "request": "^2.88.0",
-    "pg-promise": "~9.3.0"
-  }
-}
-....
+[source, json, linenums, role='code_column hide_tags=copyright,fallback,fallbackMethod']
+----
+include::collections/incubator/nodejs-express/templates/psqldb/package.json[]
+----
 
 The next step is to show how the template code could have a small sample
 of database connectivity. Notice we are hardcoding the database connectivity
@@ -1499,32 +1466,11 @@ in production, through secrets bound to the Kubernetes deployment or pod.
 Modify the `app.js` code inside the newly created "psqldb" directory to 
 look like the content below:
 
-[source, role="no_copy"]
-.app.js
-....
-const app = require('express')()
-
-// Part of new PostgreSQL example
-var pgp = require('pg-promise')(/* options */)
-var db = pgp('postgres://postgres:mysecretpassword@workshop-postgres:5432/')
-
-app.get('/', (req, res) => {
-  res.send("Hello from Appsody!");
-});
-
-// New REST endpoint
-app.get('/database', (req, res) => {
-  db.one('SELECT version () AS value')
-    .then(function (data) {
-      res.send(data.value);
-    })
-    .catch(function (error) {
-      res.send("ERROR:".concat(error));
-    })
-});
- 
-module.exports.app = app;
-....
+app.js
+[source, javascript, linenums, role='code_column hide_tags=copyright,fallback,fallbackMethod']
+----
+include::collections/incubator/nodejs-express/templates/psqldb/app.js[]
+----
 
 We are now ready to re-build our collection to include the new template:
 
@@ -1575,7 +1521,7 @@ REPO     	ID            	VERSION  	TEMPLATES                	DESCRIPTION
 dev-local	nodejs-express	0.2.6    	psqldb, *simple, skaffold	Express web framework for Node.js
 ....
 
-Before testing our application, our nextstep is to instantiate a local PostgreSQL database. We will use a custom docker network for both the PostgreSQL database container and the application container, which makes it easier for the application container to locate the database container by hostname instead of IP address.
+Before testing our application, our next step is to instantiate a local PostgreSQL database. We will use a custom docker network for both the PostgreSQL database container and the application container, which makes it easier for the application container to locate the database container by hostname instead of IP address.
 
 [source, role='command']
 ```
@@ -1753,7 +1699,7 @@ verification step in action when an application developer executes `+appsody bui
 First we create a source file inside the `nodejs-local` project, with a violation 
 to the default rule against empty blocks, named app-rule-violation.js
 
-[source,javascript]
+[source, js]
 ```
 var a=1
 if (a) {
