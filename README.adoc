@@ -36,8 +36,8 @@ be added. For more information, see https://appsody.dev/[Appsody.dev].
 At the end of this tutorial, you should have a good understanding of the
 Kabanero developer experience through the use of Appsody and Eclipse
 Codewind. You’ll know how to create a new application, develop and
-deploy it to Knative and have an appreciation for how Kabanero does all
-the heavy-lifting helping you focus on the task of writing the code.
+deploy it to Knative, and have an appreciation for how Kabanero does all
+the heavy-lifting, helping you focus on the task of writing the code.
 
 
 == Pre-requisites
@@ -164,7 +164,7 @@ time at the beginning of the workshop.
 
 [source, role='command']
 ```
-curl -sL https://github.com/gcharters/kabanero-dev-getting-started/releases/download/0.0.3/workshop-setup.sh | bash -s -- -p -l nodejs
+curl -sL https://github.com/gcharters/kabanero-dev-getting-started/releases/download/0.0.4/workshop-setup.sh | bash -s -- -p -l nodejs
 ```
 
 == Developing Cloud-native applications - Appsody
@@ -1278,13 +1278,10 @@ You now modify that version "~4.16.0" to work with the newer minor version "~4.1
 <1> Newer `express` framework version
 
 With the version changed, we need to rebuild the stack before proceeding
-with the stack validation steps. Note the call to remove the "dev-local"
-repo, which is necessary until https://github.com/appsody/appsody/issues/396[Appsody issue #396] 
-is resolved.
+with the stack validation steps.
 
 [source, role='command']
 ....
-appsody repo remove dev-local 
 appsody stack package
 ....
 
@@ -1350,9 +1347,10 @@ appsody run
 ```
 --
 
-Once the application is running, we can use a `docker exec` command to inspect
-the content of the package.json for the application and verify that the 
-`express` framework version now reflects the new value placed in the stack:
+Once the application is running, we can open a different terminal window and use 
+a `docker exec` command to inspect the content of the package.json for the application 
+and verify that the `express` framework version now reflects the new value placed in 
+the stack:
 
 [source, role='command']
 ```
@@ -1420,7 +1418,7 @@ on the "simple" template:
 [source, role='command']
 ```
 workshop_dir=$(echo ~)"/workspace/kabanero-workshop"
-cd "${workshop_dir}/collections/incubator/nodejs-express"
+cd "${workshop_dir}/collections/incubator/nodejs-express/templates"
 cp -rf simple psqldb
 
 ```
@@ -1431,7 +1429,7 @@ cp -rf simple psqldb
 [source, role='command']
 ```
 set workshop_dir="%USERPROFILE%\workspace\kabanero-workshop"
-cd "%workshop_dir%\collections\incubator\nodejs-express"
+cd "%workshop_dir%\collections\incubator\nodejs-express/templates"
 copy /s simple psqldb
 ```
 --
@@ -1467,7 +1465,7 @@ Modify the `app.js` code inside the newly created "psqldb" directory to
 look like the content below:
 
 app.js
-[source, javascript, linenums, role='code_column hide_tags=copyright,fallback,fallbackMethod']
+[source, javascript, role='code_column hide_tags=copyright,fallback,fallbackMethod']
 ----
 include::collections/incubator/nodejs-express/templates/psqldb/app.js[]
 ----
@@ -1487,7 +1485,6 @@ We are now ready to re-build our collection to include the new template:
 workshop_dir=$(echo ~)"/workspace/kabanero-workshop"
 cd "${workshop_dir}/collections/incubator/nodejs-express"
 
-appsody repo remove dev-local
 appsody stack package
 ```
 --
@@ -1499,7 +1496,6 @@ appsody stack package
 set workshop_dir="%USERPROFILE%\workspace\kabanero-workshop"
 cd "%workshop_dir%\collections\incubator\nodejs-express"
 
-appsody repo remove dev-local
 appsody stack package
 ```
 --
@@ -1590,10 +1586,11 @@ PostgreSQL 12.0 (Debian 12.0-1.pgdg100+1) on x86_64-pc-linux-gnu, compiled by gc
 End the application with `+Ctrl+C+`, stop the workshop-postgres
 container, and delete the custom network:
 
-....
+[source, role='command']
+```
 docker stop workshop-postgres
 docker network rm workshop_nw
-....
+```
 
 === Build/CD
 
@@ -1623,16 +1620,19 @@ image itself.
 
 For simplicity we will use the default eslint rules, so that we need to
 add an appropriate eslint configuration file in the image and invoke 
-`eslint` in the application code./
+`eslint` in the application code.
+
+Locate the Dockerfile for the stack:
 
 ....
-${workshop_dir}/stacks/incubator/nodejs-express/image/project/Dockerfile
+${workshop_dir}/collections/incubator/nodejs-express/image/project/Dockerfile
 ....
 
-Introduce the following lines right before the line containing
+And introduce the following lines right before the line containing
 `WORKDIR /project`
 
-....
+[source, role="no_copy"]
+----
 RUN chown -hR node:node /project
 
 # ESLint invocation
@@ -1652,13 +1652,14 @@ RUN npm install eslint \
         "ecmaVersion": 2018 \
     }, \
     "rules": { \
+      "no-empty": "warn" \
     } \
 };' > .eslintrc.js \
     && echo 'test/*' >  .eslintignore \
     && ./node_modules/.bin/eslint /project/user-app
 
 WORKDIR /project
-....
+----
 
 With the change in place, we can rebuild the stack again.
 
@@ -1676,7 +1677,6 @@ With the change in place, we can rebuild the stack again.
 workshop_dir=$(echo ~)"/workspace/kabanero-workshop"
 cd "${workshop_dir}/collections/incubator/nodejs-express"
 
-appsody repo remove dev-local
 appsody stack package 
 ```
 --
@@ -1688,7 +1688,6 @@ appsody stack package
 set workshop_dir="%USERPROFILE%\workspace\kabanero-workshop"
 cd "%workshop_dir%\collections\incubator\nodejs-express"
 
-appsody repo remove dev-local
 appsody stack package 
 ```
 --
@@ -1732,10 +1731,141 @@ cd "%workshop_dir%\nodejs-local"
 
 appsody build
 ```
+
+Eventually you will see the following log snipped pass by, indicating
+the new checks during build time: 
+
 --
 
-....
+[source, role="no_copy"]
+----
 ...
+[Docker]  ---> Running in 0b8bf6444ceb
+[Docker] + eslint@6.6.0
+[Docker] added 126 packages from 560 contributors, updated 1 package and audited 474 packages in 6.615s
+[Docker] found 0 vulnerabilities
+[Docker] 
+[Docker] 
+[Docker] /project/user-app/app-rule-violation.js
+[Docker]   2:8  warning  Empty block statement  no-empty
+[Docker] 
+[Docker] ✖ 1 problem (0 errors, 1 warning)
+[Docker] 
+...
+----
+
+
+=== Collection Scenario 4: Stack versioning
+
+Appsody supports https://semver.org/[semantic versioning] during
+development of stacks and applications. Notice how the check from the previous 
+scenario does not fail the build process, but instead prints a summary of warnings 
+for the developer.
+
+This decision was done by design, as an application architect may want
+to give some time for the whole team to address the issues raised by the 
+static code analysis without suddenly disrupting their workflow.
+
+In this scenario, we want to show how the application architect could
+release a new version of the stack that will treat the warnings as blocking
+errors, but will not automatically get picked up by developers immediately 
+after release, so we need to understand how Appsody tags stack images.
+
+The initial version of the stack used in this workshop is 0.2.*, which
+is listed in the output of `+appsody list+`. 
+
+[source, role="no_copy"]
+--
+appsody list dev-local 
+
+REPO     	ID            	VERSION  	TEMPLATES                	DESCRIPTION                                         
+dev-local	nodejs-express	0.2.7    	psqldb, scaffold, *simple	Express web framework for Node.js          
+--
+
+Locate the stack metadata file for the stack;
+
+....
+${workshop_dir}/collections/incubator/nodejs-express/stack.yaml
+....
+
+
+Now modify the version of the stack in "stack.yaml" to replace the "version" field
+with 0.3.0, so that the final file looks like this:
+
+[source]
+----
+name: Node.js Express
+version: 0.3.0
+description: Express web framework for Node.js
+...
+default-template: simple
+----
+
+Locate the Dockerfile for the stack:
+
+....
+${workshop_dir}/collections/incubator/nodejs-express/image/project/Dockerfile
+....
+
+Modify the line with the definition for the rule "no-empty" to 
+be treated as an error:
+
+[source, role="no_copy"]
+----
+...
+    "rules": { \
+      "no-empty": "error" \
+    } \
+...
+----
+
+Before packaging the modified image, let's tag the original image
+with the minor version of the stack before the modifications:
+
+[source, role='command']
+```
+docker tag dev.local/nodejs-express:SNAPSHOT dev.local/nodejs-express:0.2
+```
+
+Note that this extra step of tagging an image with a version while
+making changes to stacks will no longer be required once Appsody
+https://github.com/appsody/appsody/issues/526[GitHub issue #526]
+is addressed.
+
+We can now proceed to package and tag the modified stack:
+
+[source, role='command']
+```
+appsody stack package
+docker tag dev.local/nodejs-express:SNAPSHOT dev.local/nodejs-express:0.3
+```
+
+
+With the the new stack updated and packaged, we can turn back to the
+application and modify
+
+Locate the directory for the application being used to test the stack;
+....
+${workshop_dir}/nodejs-local
+....
+
+Modify the file named `.appsody-config.yaml` to use the new stack
+version. The final file contents should look like this:
+
+[source, role="no_copy"]
+----
+project-name: nodejs-local
+stack: dev.local/nodejs-express:0.3
+----
+
+We can now build the application using the updated stack and observe the
+new behavior, where the rule violation causes the build to break.
+
+[source, role="no_copy"]
+----
+[Docker] + eslint@6.6.0
+[Docker] added 126 packages from 560 contributors, updated 1 package and audited 474 packages in 6.33s
+[Docker] found 0 vulnerabilities
 [Docker] 
 [Docker] 
 [Docker] /project/user-app/app-rule-violation.js
@@ -1743,40 +1873,31 @@ appsody build
 [Docker] 
 [Docker] ✖ 1 problem (1 error, 0 warnings)
 [Docker] 
-...
-....
+[Docker] The command '/bin/sh -c npm install eslint     && echo 'module.exports = {     "env": {         "browser": false,         "commonjs": true,         "es6": true     },     "extends": "eslint:recommended",     "globals": {         "Atomics": "readonly",         "SharedArrayBuffer": "readonly"     },     "parserOptions": {         "ecmaVersion": 2018     },     "rules": {       "no-empty": "error"     } };' > .eslintrc.js     && echo 'test/*' >  .eslintignore     && ./node_modules/.bin/eslint /project/user-app' returned a non-zero code: 1
+[Error] exit status 1
+----
 
-=== Collection Scenario 4: Stack versioning
+At this point, developers still using the previous version would be notified 
+to ensure all errors are fixed before updating the `.appsody-config.yaml` 
+for their application, probably receiving some grace period until the previous 
+stack is discontinued.
 
-< Under construction > 
-
-Appsody supports https://semver.org/[semantic versioning] during
-development of stacks and applications. Notice how the checkstyle
-modification from the previous scenario does not fail the build process,
-but instead prints a summary of errors for the developer.
-
-This decision was done by design, as an application architect may want
-to give some time for the whole team to address the errors without
-suddenly disrupting their workflow.
-
-In this scenario, we want to show how the application architect could
-release a new version of the stack that will not automatically get
-picked up by developers immediately after release, so we need to
-understand how Appsody tags stack images.
-
-The initial version of the stack used in this workshop is 0.2.6, which
-is listed in the output of `+appsody list+`. 
-
-< Under construction > 
 
 == Further reading: Development versus production behaviour
 
-The previous scenario showed a simple change, but Kabanero collections
+The previous scenarios showed relatively simple changes, but Kabanero collections
 can accommodate more sophisticated behaviours, where the container image
 is setup with additional debugging capabilitites during development and
-stripped out of those capabilities during production. This
+stripped out of those capabilities during production.
+
+You can read more about deciding on whether to create new stacks or
+modify existing stacks in https://developer.ibm.com/articles/customizing-appsody/[this article].
+If you decide to create a new stack, https://developer.ibm.com/tutorials/create-appsody-stack/[this tutorial] 
+has excellent guidance for that activity.
+
+This
 https://github.com/appsody/stacks/pull/56[Git pull request] shows how
 that type of different behaviour can be achieved, by exploring the usage
 of https://appsody.dev/docs/stacks/stack-structure[different modes of a
-stack]: `initialization', `rapid local development', and `build and
-deploy'.
+stack]: "initialization", "rapid local development", and "build and
+deploy".
