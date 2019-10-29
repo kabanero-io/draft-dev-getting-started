@@ -1,7 +1,7 @@
 ---
 permalink: /guides/dev-getting-started-short
 ---
-:projectid: dev-getting-started
+:projectid: dev-getting-started-short
 :page-layout: guide
 :page-duration: 15 minutes
 :page-description: Short workshop content for developers getting started with Kabanero
