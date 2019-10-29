@@ -21,8 +21,8 @@ endif::[]
 
 [.tab_content.windows_section]
 --
-- https://appsody.dev/docs/getting-started/installation[Appsody]
 - Windows 10 Professional or Windows 10 Enterprise.
+- https://appsody.dev/docs/getting-started/installation[Appsody]
 ifdef::include-codewind[]
 - https://code.visualstudio.com/[Visual Studio Code]
 endif::[]

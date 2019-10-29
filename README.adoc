@@ -14,38 +14,43 @@ permalink: /guides/dev-getting-started/
 
 = Getting Started With Kabanero Development
 
-== What is Kabanero
-
-Kabanero is an open source project focused on bringing together key
-foundational open source technologies into a framework for developing
-and deploying modern cloud-native applications. The Kabanero developer
-experience leverages the Appsody and Eclipse Codewind open source
-projects enabling developers to use project 'templates' to rapidly
-create new cloud-native applications, develop and build them in a
-curated container 'stack' environment and deploy them to
-Knative/Kubernetes all without the need for container or Kubernetes
-skills.
+include::whatis.adoc[]
 
 == What you will learn
 
-This tutorial will give you an introduction to the Kabanero developer
-experience. You’ll create and deploy a Node.js cloud-native application, 
-however, Kabanero provides a number of stacks,
-including Java and Spring Boot, and is extensible so others can easily
-be added. For more information, see https://appsody.dev/[Appsody.dev].
+This tutorial is split into two parts, giving you an introduction to 
+the Kabanero developer experience, as well as an introduction to the 
+solution architecture portion of its unified experince.
+
+In the developer experience, you will be creating and deploying a 
+cloud-native microservice, leveraging a pre-existing application template 
+and runtime stack along the way.
+
+In the solution architecture portion, you will modify and extend the 
+application template and stack, observing how those changes reflect
+automatically into applications created in the first portion.
 
 At the end of this tutorial, you should have a good understanding of the
-Kabanero developer experience through the use of Appsody and Eclipse
-Codewind. You’ll know how to create a new application, develop and
-deploy it to Knative, and have an appreciation for how Kabanero does all
-the heavy-lifting, helping you focus on the task of writing the code.
+Kabanero developer experience through the use of the https://appsody.dev[Appsody]
+command-line interface, productive code iterations through the usage of 
+https://www.eclipse.org/codewind/[Codewind], as well as basic notions
+of how to play the role of a solution architect creating Kabanero collections
+for your organizaton.
+
+Note that the tutorial is based on a Node.js application using the 
+https://expressjs.com/[Express] framework, but Kabanero bundles support for other 
+programming languages and frameworks, and also supports the modular addition of
+support for other languages and frameworks through the creation of 
+https://appsody.dev/docs/stacks/stacks-overview[Appsody stacks].
 
 
 include::prerequisites.adoc[]
 
 include::appsody.adoc[]
 
+ifdef::include-codewind[]
 include::codewind.adoc[]
+endif::[]
 
 include::collections.adoc[]
 
