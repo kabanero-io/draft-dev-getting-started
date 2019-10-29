@@ -1,0 +1,539 @@
+== Developing Cloud-native applications - Appsody
+
+=== Getting to know Appsody
+
+We are going to start by trying out the developer experience Appsody
+provides and then we’ll move on to use Eclipse Codewind.
+
+Let’s take a look at what Appsody provides in terms of capabilities. In
+a command prompt, type:
+
+[source, role='command']
+```
+appsody
+```
+
+You should see output similar to the following:
+
+[source, role="no_copy"]
+----
+The Appsody command-line tool (CLI) enables the rapid development of cloud native applications.
+
+Complete documentation is available at https://appsody.dev
+
+Usage:
+  appsody [command]
+
+Available Commands:
+  build       Locally build a docker image of your appsody project
+  completion  Generates bash tab completions
+  debug       Run the local Appsody environment in debug mode
+  deploy      Build and deploy your Appsody project to your Kubernetes cluster
+  extract     Extract the stack and your Appsody project to a local directory
+  help        Help about any command
+  init        Initialize an Appsody project with a stack and template app
+  list        List the Appsody stacks available to init
+  operator    Install or uninstall the Appsody operator from your Kubernetes cluster.
+  repo        Manage your Appsody repositories
+  run         Run the local Appsody environment for your project
+  stop        Stops the local Appsody docker container for your project
+  test        Test your project in the local Appsody environment
+  version     Show Appsody CLI version
+
+Flags:
+      --config string   config file (default is $HOME/.appsody/.appsody.yaml)
+      --dryrun          Turns on dry run mode
+  -h, --help            help for appsody
+  -v, --verbose         Turns on debug output and logging to a file in $HOME/.appsody/logs
+
+Use "appsody [command] --help" for more information about a command.
+----
+
+The Appsody CLI has a number of *Commands*. The majority of these
+commands are for working with stacks: build, debug, run stop, test, and
+extract, list.
+
+Let’s take a look at what stacks we have available by entering:
+
+[source, role='command']
+```
+appsody list
+```
+
+This command lists the available stacks and you should see something
+like:
+
+[source, role="no_copy"]
+----
+REPO                    ID                          VERSION     TEMPLATES   DESCRIPTION                                              
+appsodyhub              java-microprofile           0.2.11      *default    Eclipse MicroProfile using OpenJ9 and Maven              
+appsodyhub              java-spring-boot2           0.3.8       *default    Spring Boot using OpenJ9 and Maven                       
+appsodyhub              nodejs                      0.2.5       *simple     Runtime for Node.js applications                         
+appsodyhub              nodejs-express              0.2.5       *simple     Express web framework for Node.js                        
+appsodyhub              nodejs-loopback             0.1.3       *scaffold   LoopBack API framework for Node.js                       
+appsodyhub              swift                       0.1.4       *simple     Runtime for Swift applications
+----
+
+You’ll see that with the stacks available, we can develop new
+cloud-native applications using Java, Node.js or Swift, with a number of
+different, popular frameworks.
+
+You can also register new repositories containing stacks created from
+the ground up or as forks of the default stacks shipped with Appsody
+
+To illustrate that point, we can register the repository for 
+Kabanero collections, using the following command:
+
+[source, role='command']
+```
+appsody repo add kabanero https://github.com/kabanero-io/collections/releases/download/v0.2.0-beta1/kabanero-index.yaml
+
+appsody repo list
+```
+
+You should see an output similar to this:
+
+[source, role="no_copy"]
+----
+NAME       	URL                                                                                          
+*appsodyhub	https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml              
+kabanero   	https://github.com/kabanero-io/collections/releases/download/v0.2.0-beta1/kabanero-index.yaml
+----
+
+`+Appsodyhub+` is the location where the appsody project releases its
+stacks. The `+*+` indicates that this is the default repository. We can
+instruct appsody to set the new kabanero repository as the default repository:
+
+....
+$ appsody repo set-default kabanero
+Your default repository is now set to kabanero
+
+$ appsody repo list
+
+NAME      	URL                                                                                          
+*kabanero 	https://github.com/kabanero-io/collections/releases/download/v0.2.0-beta1/kabanero-index.yaml
+appsodyhub	https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml       
+....
+
+
+
+
+=== Creating a new Project with Appsody
+
+Make a directory to contain your project:
+
+[.tab_link.mac_link]
+`*MAC*`
+
+[.tab_link.windows_link]
+`*WINDOWS*`
+
+[.tab_content.mac_section]
+--
+[source, role='command']
+```
+mkdir -p ~/workspace/kabanero-workshop/nodejs
+cd ~/workspace/kabanero-workshop/nodejs
+```
+--
+
+[.tab_content.windows_section]
+--
+[source, role='command']
+```
+mkdir %USERPROFILE%\workspace\kabanero-workshop\nodejs
+cd %USERPROFILE%\workspace\kabanero-workshop\nodejs
+```
+--
+
+Create the new project. This project will be using the Node.JS Express framework.
+
+[source, role='command']
+appsody init kabanero/nodejs-express
+
+
+When the build completes, you should see something like:
+
+[source, role="no_copy"]
+...
+[InitScript] [INFO] ------------------------------------------------------------------------
+[InitScript] [INFO] BUILD SUCCESS
+[InitScript] [INFO] ------------------------------------------------------------------------
+[InitScript] [INFO] Total time: 0.800 s
+[InitScript] [INFO] Finished at: 2019-09-02T15:52:41+01:00
+[InitScript] [INFO] ------------------------------------------------------------------------
+Successfully initialized Appsody project
+
+
+Open up the project in VS Code.
+
+[source, role='command']
+code .
+
+Special note for compiled languages, such as Java: To experience the incremental 
+update during development you will need an IDE that automatically compiles the source files each time
+they are saved. For instance, VS Code (with the Red Hat
+`+Language Support for Java+`), Eclipse and IntelliJ IDEA are all known
+to work.
+
+
+Expand the project `+src+` and you should see a structure and code like
+this:
+
+This project template was designed with simplicity in mind, containing only
+a skeleton Node.JS application and Appsody control files:
+
+[source, role="no_copy"]
+```
+./test/test.js
+./.gitignore
+./package-lock.json
+./package.json
+./.appsody-config.yaml
+./.vscode/launch.json
+./.vscode/tasks.json
+./app.js
+```
+
+
+=== Live coding with Appsody
+
+Let’s start the new application ready to make some edits. Enter the
+following command:
+
+[source, role='command']
+appsody run
+
+The run command for this stack has been set up to run the application 
+with `node` and use hot code updates to reflect code changes made
+to the source tree.
+
+After a while you should see output similar to the following:
+
+[source, role="no_copy"]
+Running development environment...
+Pulling docker image dev.local/nodejs-express:SNAPSHOT
+Running command: docker pull dev.local/nodejs-express:SNAPSHOT
+Error response from daemon: Get https://dev.local/v2/: Service Unavailable
+[Warning] Docker image pull failed: exit status 1
+Using local cache for image dev.local/nodejs-express:SNAPSHOT
+Running docker command: docker run --rm -p 3000:3000 -p 8080:8080 -p 9229:9229 --name node-js-dev -v /Users/nastacio/workspace/kabanero-workshop/nodejs/:/project/user-app -v node-js-deps:/project/user-app/node_modules -v /Users/nastacio/.appsody/appsody-controller:/appsody/appsody-controller -t --entrypoint /appsody/appsody-controller dev.local/nodejs-express:SNAPSHOT --mode=run
+[Container] Running APPSODY_PREP command: npm install --prefix user-app
+added 170 packages from 578 contributors and audited 295 packages in 3.639s
+[Container] found 0 vulnerabilities
+[Container] 
+Running command:  npm start
+[Container] Running command:  npm start
+[Container] Wait received error on APPSODY_RUN/DEBUG/TEST signal: interrupt
+[Container] 
+[Container] > nodejs-express@0.2.6 start /project
+[Container] > node server.js
+[Container] 
+[Container] [Tue Oct  8 15:04:22 2019] com.ibm.diagnostics.healthcenter.loader INFO: Node Application Metrics 5.0.5.201910032155 (Agent Core 4.0.5)
+[Container] [Tue Oct  8 15:04:23 2019] com.ibm.diagnostics.healthcenter.mqtt INFO: Connecting to broker localhost:1883
+[Container] App started on PORT 3000
+[Container] Running command:  npm start
+[Container] [Warning] Wait Received error starting process of type APPSODY_RUN/DEBUG/TEST_ON_CHANGE while running command: npm start error received was: signal: interrupt
+[Container] 
+[Container] > nodejs-express@0.2.6 start /project
+[Container] > node server.js
+[Container] 
+[Container] [Tue Oct  8 15:04:23 2019] com.ibm.diagnostics.healthcenter.loader INFO: Node Application Metrics 5.0.5.201910032155 (Agent Core 4.0.5)
+[Container] [Tue Oct  8 15:04:24 2019] com.ibm.diagnostics.healthcenter.mqtt INFO: Connecting to broker localhost:1883
+[Container] App started on PORT 3000
+
+
+Let’s now make a code change. The Node.js Express stack can dynamically 
+update the running application without needing a restart.
+
+First, navigate to the REST application endpoint to confirm that there
+are no esources available. Open the following link in your
+browser:
+
+http://localhost:3000/resource
+
+You should see an `+Not Found+` response.
+
+Modify the app.js source file to include the extra "/resource" REST path:
+
+[source,nodejs]
+----
+const app = require('express')()
+
+app.get('/', (req, res) => {
+  res.send("Hello from Appsody!");
+});
+
+app.get('/resource', (req, res) => {
+  res.send("Resource from Appsody!");
+});
+
+module.exports.app = app;
+----
+
+You should see that upon saving the file the source code change is detected 
+and the application updated:
+
+[source, role="no_copy"]
+[Container] Running command:  npm start
+[Container] [Warning] Wait Received error starting process of type APPSODY_RUN/DEBUG/TEST_ON_CHANGE while running command: npm start error received was: signal: interrupt
+[Container] 
+[Container] > nodejs-express@0.2.6 start /project
+[Container] > node server.js
+[Container] 
+[Container] [Tue Oct  8 15:38:53 2019] com.ibm.diagnostics.healthcenter.loader INFO: Node Application Metrics 5.0.5.201910032155 (Agent Core 4.0.5)
+[Container] [Tue Oct  8 15:38:53 2019] com.ibm.diagnostics.healthcenter.mqtt INFO: Connecting to broker localhost:1883
+[Container] App started on PORT 3000
+
+
+Now if you browse http://localhost:3000/resource, you should see the message 
+`+Resource from Appsody!+` instead of the original `+Not Found+` message 
+
+Try changing the message in `+app.js+` saving and
+refreshing the page. You’ll see it only takes a few seconds for the
+change to take effect.
+
+When you’re done, type `+Ctrl-C+` to end the appsody run.
+
+=== Deploying to Kubernetes
+
+You’ve finished writing your code and want to deploy to Kubernetes. The
+Kabanero project integrates Tekton as a CI/CD pipeline for deploying to
+Kubernetes (including Knative and Istio). This enables you to commit
+your changes to a git repo and have a Tekton pipeline build and
+potentially deploy the project.
+
+A full Kabanero set-up was considered too much for this workshop, so
+here we are going to make use of a nice little feature from Appsody,
+`+appsody deploy+`. In the terminal in the root of your project, type:
+
+[source, role='command']
+appsody deploy
+
+At the end of the deploy, you should see an output like this:
+
+[source, role="no_copy"]
+Built docker image dev.local/nodejs
+Using applicationImage of: dev.local/nodejs
+Attempting to apply resource in Kubernetes ...
+Running command: kubectl apply -f app-deploy.yaml --namespace default
+Deployment succeeded.
+Appsody Deployment name is: nodejs
+Running command: kubectl get rt nodejs -o jsonpath="{.status.url}" --namespace default
+Attempting to get resource from Kubernetes ...
+Running command: kubectl get route nodejs -o jsonpath={.status.ingress[0].host} --namespace default
+Attempting to get resource from Kubernetes ...
+Running command: kubectl get svc nodejs -o jsonpath=http://{.status.loadBalancer.ingress[0].hostname}:{.spec.ports[0].nodePort} --namespace default
+Deployed project running at http://localhost:30062
+
+The very last line tells you where the application is available. Let’s
+call the resource by opening this endpoint in the browser:
+
+http://localhost:30062/resource
+
+You should now see the response from your JAX-RS resource.
+
+Let’s take a look at the deployment. Enter:
+
+[source, role='command']
+kubectl get all
+
+
+You should see an output similar to this:
+
+[source, role="no_copy"]
+--
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/appsody-operator-6bbddbd455-r65vp   1/1     Running   0          6m57s
+pod/nodejs-7d84ddc98d-r7bnj             1/1     Running   0          44s
+
+
+NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/appsody-operator   ClusterIP   10.100.219.241   <none>        8383/TCP         6m51s
+service/kubernetes         ClusterIP   10.96.0.1        <none>        443/TCP          9m13s
+service/nodejs             NodePort    10.110.138.128   <none>        3000:30062/TCP   44s
+
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/appsody-operator   1/1     1            1           6m57s
+deployment.apps/nodejs             1/1     1            1           44s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/appsody-operator-6bbddbd455   1         1         1       6m57s
+replicaset.apps/nodejs-7d84ddc98d             1         1         1       44s
+--
+
+The entries with `+nodejs+` are your applications. The
+`+appsody-operator+` are those used by Appsody to perform the
+deployment.
+
+It’s worth noting at this point that this deployment was achieved
+without us having to write, or understand, a Dockerfile or Kubernetes
+deployment yaml.
+
+Now list the files in your project directory. You should see something
+like this:
+
+[source, role="no_copy"]
+....
+-rw-r--r--  1 nastacio  staff    628 Oct  8 14:05 app-deploy.yaml
+-rw-r--r--  1 nastacio  staff    130 Oct  8 14:02 app.js
+-rw-r--r--  1 nastacio  staff  51421 Oct  8 14:02 package-lock.json
+-rw-r--r--  1 nastacio  staff    455 Oct  8 14:02 package.json
+drwxr-xr-x  3 nastacio  staff     96 Oct  8 14:02 test
+....
+
+The `+app-deploy.yaml+` is generated from the stack and used to deploy
+to Kubernetes. If you look inside the file, you’ll see entries for
+`+liveness+` and `+readiness+` probes, metrics, and the service port.
+
+Check out the `+liveness+` and `+readiness+` endpoints by pointing your
+browser at the following URLs, remembering to replace the port numbers with
+the port numbers from the output of the `appsody deploy` command:
+
+* http://localhost:30062/live
+* http://localhost:30062/ready
+
+You should see something like:
+
+[source,json]
+----
+// http://localhost:30062/ready
+
+{
+    "status":"UP",
+    "checks":[]
+}
+----
+
+These endpoints are provided by the stack health checks generated
+by the project starter.
+
+Finally, let’s undeploy the application by entering:
+
+[source, role='command']
+```
+appsody deploy delete
+```
+
+
+You should see an output something like this:
+
+[source, role="no_copy"]
+----
+....
+Deleting deployment using deployment manifest app-deploy.yaml
+Attempting to delete resource from Kubernetes...
+Running command: kubectl delete -f app-deploy.yaml --namespace default
+Deployment deleted
+....
+----
+
+Check that everything was undeployed using:
+
+[source, role='command']
+```
+kubectl get all
+```
+
+You should see output similar to this:
+
+[source, role="no_copy"]
+....
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/appsody-operator-6bbddbd455-r65vp   1/1     Running   0          13m
+
+
+NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+service/appsody-operator   ClusterIP   10.100.219.241   <none>        8383/TCP   13m
+service/kubernetes         ClusterIP   10.96.0.1        <none>        443/TCP    15m
+
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/appsody-operator   1/1     1            1           13m
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/appsody-operator-6bbddbd455   1         1         1       13m
+....
+
+What if you decide you want to see the Container and Kubernetes
+configuration that Appsody is using, or you want to take your project
+elsewhere? You can do this as follows. Enter:
+
+[source, role='command']
+```
+appsody extract --target-dir tmp-extract
+```
+
+You should see output similar to:
+
+[source, role="no_copy"]
+....
+Extracting project from development environment
+Pulling docker image dev.local/nodejs-express:SNAPSHOT
+Running command: docker pull dev.local/nodejs-express:SNAPSHOT
+Error response from daemon: Get https://dev.local/v2/: Service Unavailable
+[Warning] Docker image pull failed: exit status 1
+Using local cache for image dev.local/nodejs-express:SNAPSHOT
+[Warning] The stack image does not contain APPSODY_PROJECT_DIR. Using /project
+Running command: docker create --name nodejs-extract -v /Users/nastacio/workspace/kabanero-workshop/nodejs/:/project/user-app dev.local/nodejs-express:SNAPSHOT
+Running command: docker cp nodejs-extract:/project /Users/nastacio/.appsody/extract/nodejs
+Running command: docker rm nodejs-extract -f
+Project extracted to /Users/nastacio/workspace/kabanero-workshop/nodejs/tmp-extract
+....
+
+Let’s take a look at the extracted project:
+
+[.tab_link.mac_link]
+`*MAC*`
+
+[.tab_link.windows_link]
+`*WINDOWS*`
+
+[.tab_content.mac_section]
+--
+[source, role='command']
+```
+cd ~/workspace/kabanero-workshop/nodejs/tmp-extract
+ls -al
+```
+--
+
+[.tab_content.windows_section]
+--
+[source, role='command']
+```
+cd %USERPROFILE%\workspace\kabanero-workshop\nodejs\tmp-extract
+dir
+```
+--
+
+You should see output similar to the following:
+
+[source, role="no_copy"]
+....
+drwxr-xr-x   10 nastacio  staff    320 Oct  3 17:55 .
+drwxr-xr-x   11 nastacio  staff    352 Oct  8 14:15 ..
+-rw-r--r--    1 nastacio  staff     48 Oct  3 14:41 .dockerignore
+-rw-r--r--    1 nastacio  staff    878 Oct  3 14:41 Dockerfile
+drwxr-xr-x  274 nastacio  staff   8768 Oct  3 17:55 node_modules
+-rw-r--r--    1 nastacio  staff  92237 Oct  3 17:55 package-lock.json
+-rw-r--r--    1 nastacio  staff    659 Oct  3 14:41 package.json
+-rw-r--r--    1 nastacio  staff   1462 Oct  3 14:41 server.js
+drwxr-xr-x    3 nastacio  staff     96 Oct  3 14:41 test
+drwxr-xr-x   10 nastacio  staff    320 Oct  8 14:04 user-app
+....
+
+
+These are the files for the project, including those provided by the
+stack. For example, the `+package.json+` has the core application definition 
+for your application, and the `+Dockerfile+` is the one used to build and package
+the application. The `+user-app+` is the Node.js project for your
+application.
+
+That’s it for the Appsody part of the workshop. You’ve seen how Appsody
+`+stacks+` and `+templates+` make it easy to get started with a new
+project with a curated and consistent dev and production environment.
+You’ve also seen how Appsody makes it really easy to build
+production-ready containers and deploy them to a Kubernetes environment.
+Let’s now take a look at Codewind.
