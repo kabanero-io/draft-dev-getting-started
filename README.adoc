@@ -9,7 +9,7 @@ permalink: /guides/dev-getting-started/
 :page-title: Getting Started With Kabanero Development
 :linkattrs:
 
-:kabanero-collection: v0.2.0-beta1
+:kabanero-collection: v0.2.0
 :include-codewind: true
 
 = Getting Started With Kabanero Development
@@ -44,7 +44,7 @@ support for other languages and frameworks through the creation of
 https://appsody.dev/docs/stacks/stacks-overview[Appsody stacks].
 
 
-include::prerequisites.adoc[]
+include::prerequisites-raw.adoc[]
 
 include::appsody.adoc[]
 

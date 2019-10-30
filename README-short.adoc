@@ -1,7 +1,7 @@
 ---
 permalink: /guides/dev-getting-started-short
 ---
-:projectid: dev-getting-started-short
+:projectid: dev-getting-started
 :page-layout: guide
 :page-duration: 15 minutes
 :page-description: Workshop content for developers getting started with Kabanero
@@ -9,7 +9,8 @@ permalink: /guides/dev-getting-started-short
 :page-title: Getting Started With Kabanero Development
 :linkattrs:
 
-:kabanero-collection: v0.2.0-beta1
+:kabanero-collection: v0.2.0
+:workshop-quick: true
 
 
 = Getting Started With Kabanero Development
@@ -35,8 +36,5 @@ https://expressjs.com/[Express] framework, but Kabanero bundles support for othe
 programming languages and frameworks, and also supports the modular addition of
 support for other languages and frameworks through the creation of 
 https://appsody.dev/docs/stacks/stacks-overview[Appsody stacks].
-
-
-include::prerequisites.adoc[]
 
 include::appsody.adoc[]

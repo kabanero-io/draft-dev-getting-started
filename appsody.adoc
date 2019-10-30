@@ -7,7 +7,6 @@ We are going to start by trying out the developer experience Appsody
 provides and then we’ll move on to use Eclipse Codewind.
 endif::[]
 
-s
 Let’s take a look at what Appsody provides in terms of capabilities. In
 a command prompt, type:
 
@@ -211,34 +210,19 @@ After a while you should see output similar to the following:
 
 [source, role="no_copy"]
 Running development environment...
-Pulling docker image dev.local/nodejs-express:SNAPSHOT
-Running command: docker pull dev.local/nodejs-express:SNAPSHOT
-Error response from daemon: Get https://dev.local/v2/: Service Unavailable
-[Warning] Docker image pull failed: exit status 1
-Using local cache for image dev.local/nodejs-express:SNAPSHOT
-Running docker command: docker run --rm -p 3000:3000 -p 8080:8080 -p 9229:9229 --name node-js-dev -v /Users/nastacio/workspace/kabanero-workshop/nodejs/:/project/user-app -v node-js-deps:/project/user-app/node_modules -v /Users/nastacio/.appsody/appsody-controller:/appsody/appsody-controller -t --entrypoint /appsody/appsody-controller dev.local/nodejs-express:SNAPSHOT --mode=run
+Using local cache for image kabanero/nodejs-express:0.2
+Running docker command: docker run --rm -P --name nodejs-dev -v /Users/nastacio/workspace/kabanero-workshop/nodejs/:/project/user-app -v nodejs-deps:/project/user-app/node_modules -v /Users/nastacio/.appsody/appsody-controller:/appsody/appsody-controller -t --entrypoint /appsody/appsody-controller kabanero/nodejs-express:0.2 --mode=run
 [Container] Running APPSODY_PREP command: npm install --prefix user-app
-added 170 packages from 578 contributors and audited 295 packages in 3.639s
+audited 295 packages in 5.856s
 [Container] found 0 vulnerabilities
 [Container] 
-Running command:  npm start
 [Container] Running command:  npm start
-[Container] Wait received error on APPSODY_RUN/DEBUG/TEST signal: interrupt
 [Container] 
 [Container] > nodejs-express@0.2.6 start /project
 [Container] > node server.js
 [Container] 
-[Container] [Tue Oct  8 15:04:22 2019] com.ibm.diagnostics.healthcenter.loader INFO: Node Application Metrics 5.0.5.201910032155 (Agent Core 4.0.5)
-[Container] [Tue Oct  8 15:04:23 2019] com.ibm.diagnostics.healthcenter.mqtt INFO: Connecting to broker localhost:1883
-[Container] App started on PORT 3000
-[Container] Running command:  npm start
-[Container] [Warning] Wait Received error starting process of type APPSODY_RUN/DEBUG/TEST_ON_CHANGE while running command: npm start error received was: signal: interrupt
-[Container] 
-[Container] > nodejs-express@0.2.6 start /project
-[Container] > node server.js
-[Container] 
-[Container] [Tue Oct  8 15:04:23 2019] com.ibm.diagnostics.healthcenter.loader INFO: Node Application Metrics 5.0.5.201910032155 (Agent Core 4.0.5)
-[Container] [Tue Oct  8 15:04:24 2019] com.ibm.diagnostics.healthcenter.mqtt INFO: Connecting to broker localhost:1883
+[Container] [Wed Oct 30 00:10:40 2019] com.ibm.diagnostics.healthcenter.loader INFO: Node Application Metrics 5.0.5.201910041526 (Agent Core 4.0.5)
+[Container] [Wed Oct 30 00:10:41 2019] com.ibm.diagnostics.healthcenter.mqtt INFO: Connecting to broker localhost:1883
 [Container] App started on PORT 3000
 
 
@@ -297,14 +281,23 @@ When you’re done, type `+Ctrl-C+` to end the appsody run.
 === Deploying to Kubernetes
 
 You’ve finished writing your code and want to deploy to Kubernetes. The
-Kabanero project integrates Tekton as a CI/CD pipeline for deploying to
-Kubernetes (including Knative and Istio). This enables you to commit
-your changes to a git repo and have a Tekton pipeline build and
+Kabanero project integrates https://tekton.dev/[Tekton] as a CI/CD pipeline 
+for deploying to Kubernetes (including Knative and Istio). This enables you 
+to commit your changes to a git repo and have a Tekton pipeline build and
 potentially deploy the project.
 
-A full Kabanero set-up was considered too much for this workshop, so
-here we are going to make use of a nice little feature from Appsody,
-`+appsody deploy+`. In the terminal in the root of your project, type:
+The setup of Tekton pipelines is a larger tutorial of its own, but application
+developers can use the Appsody `+appsody deploy+` command to deploy the application
+to a Kubernetes cluster, which allows the developer to verify whether the application
+will build and deploy correctly once it reaches a Tekton pipeline.
+
+If you interested in the Tekton pipelines after completing this tutorial, these
+are excellent tutorials covering the subject:
+
+- https://developer.ibm.com/tutorials/knative-build-app-development-with-tekton/[Deploy a Knative application using Tekton Pipelines]
+- https://developer.ibm.com/tutorials/make-continuous-delivery-easier-with-tekton-dashboards/[Continuous delivery with Tekton Dashboards example]
+
+Run the deployment command:
 
 [source, role='command']
 appsody deploy
@@ -362,16 +355,17 @@ replicaset.apps/appsody-operator-6bbddbd455   1         1         1       6m57s
 replicaset.apps/nodejs-7d84ddc98d             1         1         1       44s
 --
 
-The entries with `+nodejs+` are your applications. The
-`+appsody-operator+` are those used by Appsody to perform the
+The entries with `+nodejs+` correspond to Kubernetes resources
+created to support your application. The
+`+appsody-operator+` resources are those used by Appsody to perform the
 deployment.
 
-It’s worth noting at this point that this deployment was achieved
-without us having to write, or understand, a Dockerfile or Kubernetes
-deployment file.
+It is worth noting at this point that this deployment was achieved
+without the need for writing, or even understanding, a Dockerfile or 
+Kubernetes deployment file.
 
-Now list the files in your project directory. You should see something
-like this:
+Now we can list the files in the project directory, which should contain
+files like this:
 
 [source, role="no_copy"]
 ....
@@ -383,8 +377,8 @@ drwxr-xr-x  3 nastacio  staff     96 Oct  8 14:02 test
 ....
 
 The `+app-deploy.yaml+` is generated from the stack and used to deploy
-to Kubernetes. If you look inside the file, you’ll see entries for 
-liveness and readiness probes, metrics, and the service port.
+the application to Kubernetes. If you look inside the file, you will see 
+entries for liveness and readiness probes, metrics, and the service port.
 
 Check out the `+live+` and `+ready+` endpoints by pointing your
 browser at the following URLs, remembering to replace the port numbers with
@@ -527,12 +521,20 @@ drwxr-xr-x   10 nastacio  staff    320 Oct  8 14:04 user-app
 These are the files for the project, including those provided by the
 stack. For example, the `+package.json+` has the core application definition 
 for your application, and the `+Dockerfile+` is the one used to build and package
-the application. The `+user-app+` is the Node.js project for your
+the application. The `+user-app+` directory contains the Node.js project for your
 application.
 
-That’s it for the Appsody part of the workshop. You’ve seen how Appsody
+ifdef::include-codewind[]
+That’s it for the Appsody part of the tutoral.
+endif::[]
+
+You have seen how Appsody
 `+stacks+` and `+templates+` make it easy to get started with a new
-project with a curated and consistent dev and production environment.
-You’ve also seen how Appsody makes it really easy to build
+project, using a curated and consistent dev and production environment.
+
+You have also seen how Appsody makes it really easy to build
 production-ready containers and deploy them to a Kubernetes environment.
+
+ifdef::include-codewind[]
 Let’s now take a look at Codewind.
+endif::[]
