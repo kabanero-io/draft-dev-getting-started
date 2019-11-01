@@ -88,7 +88,7 @@ collections, we will add that repository, using the following command:
 
 [source, role='command']
 ```
-appsody repo add kabanero https://github.com/kabanero-io/collections/releases/download/v0.2.0/kabanero-index.yaml
+appsody repo add kabanero https://github.com/kabanero-io/collections/releases/download/0.2.1/kabanero-index.yaml
 
 appsody repo list
 ```
@@ -99,7 +99,7 @@ You should see an output similar to this:
 ----
 NAME       	URL                                                                                          
 *appsodyhub	https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml              
-kabanero   	https://github.com/kabanero-io/collections/releases/download/v0.2.0/kabanero-index.yaml
+kabanero   	https://github.com/kabanero-io/collections/releases/download/0.2.1/kabanero-index.yaml
 ----
 
 `+Appsodyhub+` is the location where the appsody project releases its
@@ -113,7 +113,7 @@ Your default repository is now set to kabanero
 $ appsody repo list
 
 NAME      	URL                                                                                          
-*kabanero 	https://github.com/kabanero-io/collections/releases/download/v0.2.0/kabanero-index.yaml
+*kabanero 	https://github.com/kabanero-io/collections/releases/download/0.2.1/kabanero-index.yaml
 appsodyhub	https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml       
 ....
 
@@ -535,6 +535,3 @@ project, using a curated and consistent dev and production environment.
 You have also seen how Appsody makes it really easy to build
 production-ready containers and deploy them to a Kubernetes environment.
 
-ifdef::include-codewind[]
-Let’s now take a look at Codewind.
-endif::[]
