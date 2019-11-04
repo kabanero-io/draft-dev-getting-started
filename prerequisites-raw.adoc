@@ -107,7 +107,7 @@ installed and running.
 
 [source, role='command']
 ```
-curl -sL https://github.com/gcharters/kabanero-dev-getting-started/releases/download/0.0.5/workshop-setup.sh | bash -s -- -p
+curl -sL https://github.com/gcharters/kabanero-dev-getting-started/releases/download/0.0.5/workshop-setup.sh | bash -s -- -p -l nodejs
 ```
 
 
@@ -124,5 +124,5 @@ time throughout the course of this tutorial.
 
 [source, role='command']
 ```
-curl -sL https://github.com/gcharters/kabanero-dev-getting-started/releases/download/0.0.5/workshop-setup.sh | bash -s -- -l nodejs
+curl -sL https://github.com/gcharters/kabanero-dev-getting-started/releases/download/0.0.5/workshop-setup.sh | bash -s -- -c -l nodejs
 ```
