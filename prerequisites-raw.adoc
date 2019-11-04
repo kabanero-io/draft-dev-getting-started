@@ -31,11 +31,7 @@ endif::[]
 link:docker-windows-aad[Special notes about Docker Desktop on Windows
 10] to ensure your Docker installation can successfully write content to
 volumes mounted into containers.
-- https://www.cygwin.com/[Cygwin].
-- Ensure your Cygwin home directory *matches your Windows home directory*, as
-described in
-https://ryanharrison.co.uk/2015/12/01/cygwin-change-home-directory.html[this
-blog entry]. 
+- https://www.cygwin.com/[Cygwin], ensuring your Cygwin home directory *matches your Windows home directory*, as described in https://ryanharrison.co.uk/2015/12/01/cygwin-change-home-directory.html[this blog entry]. 
 --
 
 === Enable Kubernetes 

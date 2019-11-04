@@ -68,11 +68,11 @@ like:
 [source, role="no_copy"]
 ----
 REPO                    ID                          VERSION     TEMPLATES   DESCRIPTION                                              
-appsodyhub              java-microprofile           0.2.11      *default    Eclipse MicroProfile using OpenJ9 and Maven              
-appsodyhub              java-spring-boot2           0.3.8       *default    Spring Boot using OpenJ9 and Maven                       
-appsodyhub              nodejs                      0.2.5       *simple     Runtime for Node.js applications                         
-appsodyhub              nodejs-express              0.2.5       *simple     Express web framework for Node.js                        
-appsodyhub              nodejs-loopback             0.1.3       *scaffold   LoopBack API framework for Node.js                       
+appsodyhub              java-microprofile           0.2.11      *default    Eclipse MicroProfile using OpenJ9 and Maven
+appsodyhub              java-spring-boot2           0.3.8       *default    Spring Boot using OpenJ9 and Maven
+appsodyhub              nodejs                      0.2.5       *simple     Runtime for Node.js applications
+appsodyhub              nodejs-express              0.2.5       *simple     Express web framework for Node.js
+appsodyhub              nodejs-loopback             0.1.3       *scaffold   LoopBack API framework for Node.js
 appsodyhub              swift                       0.1.4       *simple     Runtime for Swift applications
 ----
 
@@ -81,14 +81,14 @@ cloud-native applications using Java, Node.js or Swift, with a number of
 different, popular frameworks.
 
 You can also register new repositories containing stacks created from
-the ground up or as forks of the default stacks shipped with Appsody
+the ground up or as clones of the default stacks shipped with Appsody.
 
 To illustrate that point, and to ensure this workshop will use the Kabanero
 collections, we will add that repository, using the following command:
 
 [source, role='command']
 ```
-appsody repo add kabanero https://github.com/kabanero-io/collections/releases/download/0.2.1/kabanero-index.yaml
+appsody repo add kabanero https://github.com/kabanero-io/collections/releases/latest/download/kabanero-index.yaml
 
 appsody repo list
 ```
@@ -98,25 +98,25 @@ You should see an output similar to this:
 [source, role="no_copy"]
 ----
 NAME       	URL                                                                                          
-*appsodyhub	https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml              
-kabanero   	https://github.com/kabanero-io/collections/releases/download/0.2.1/kabanero-index.yaml
+*appsodyhub https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml              
+kabanero    https://github.com/kabanero-io/collections/releases/latest/download/kabanero-index.yaml
 ----
 
 `+Appsodyhub+` is the location where the appsody project releases its
 stacks. The `+*+` indicates that this is the default repository. We can
 instruct appsody to set the new kabanero repository as the default repository:
 
-....
+[source, role="no_copy"]
+----
 $ appsody repo set-default kabanero
 Your default repository is now set to kabanero
 
 $ appsody repo list
 
 NAME      	URL                                                                                          
-*kabanero 	https://github.com/kabanero-io/collections/releases/download/0.2.1/kabanero-index.yaml
-appsodyhub	https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml       
-....
-
+*kabanero   https://github.com/kabanero-io/collections/releases/latest/download/kabanero-index.yaml
+appsodyhub  https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml
+----
 
 
 
@@ -211,7 +211,7 @@ After a while you should see output similar to the following:
 [source, role="no_copy"]
 Running development environment...
 Using local cache for image kabanero/nodejs-express:0.2
-Running docker command: docker run --rm -P --name nodejs-dev -v /Users/nastacio/workspace/kabanero-workshop/nodejs/:/project/user-app -v nodejs-deps:/project/user-app/node_modules -v /Users/nastacio/.appsody/appsody-controller:/appsody/appsody-controller -t --entrypoint /appsody/appsody-controller kabanero/nodejs-express:0.2 --mode=run
+Running docker command: docker run --rm -P --name nodejs-dev -v /Users/myuser/workspace/kabanero-workshop/nodejs/:/project/user-app -v nodejs-deps:/project/user-app/node_modules -v /Users/myuser/.appsody/appsody-controller:/appsody/appsody-controller -t --entrypoint /appsody/appsody-controller kabanero/nodejs-express:0.2 --mode=run
 [Container] Running APPSODY_PREP command: npm install --prefix user-app
 audited 295 packages in 5.856s
 [Container] found 0 vulnerabilities
@@ -369,11 +369,11 @@ files like this:
 
 [source, role="no_copy"]
 ....
--rw-r--r--  1 nastacio  staff    628 Oct  8 14:05 app-deploy.yaml
--rw-r--r--  1 nastacio  staff    130 Oct  8 14:02 app.js
--rw-r--r--  1 nastacio  staff  51421 Oct  8 14:02 package-lock.json
--rw-r--r--  1 nastacio  staff    455 Oct  8 14:02 package.json
-drwxr-xr-x  3 nastacio  staff     96 Oct  8 14:02 test
+-rw-r--r--  1 myuser  staff    628 Oct  8 14:05 app-deploy.yaml
+-rw-r--r--  1 myuser  staff    130 Oct  8 14:02 app.js
+-rw-r--r--  1 myuser  staff  51421 Oct  8 14:02 package-lock.json
+-rw-r--r--  1 myuser  staff    455 Oct  8 14:02 package.json
+drwxr-xr-x  3 myuser  staff     96 Oct  8 14:02 test
 ....
 
 The `+app-deploy.yaml+` is generated from the stack and used to deploy
@@ -469,10 +469,10 @@ Error response from daemon: Get https://dev.local/v2/: Service Unavailable
 [Warning] Docker image pull failed: exit status 1
 Using local cache for image dev.local/nodejs-express:SNAPSHOT
 [Warning] The stack image does not contain APPSODY_PROJECT_DIR. Using /project
-Running command: docker create --name nodejs-extract -v /Users/nastacio/workspace/kabanero-workshop/nodejs/:/project/user-app dev.local/nodejs-express:SNAPSHOT
-Running command: docker cp nodejs-extract:/project /Users/nastacio/.appsody/extract/nodejs
+Running command: docker create --name nodejs-extract -v /Users/myuser/workspace/kabanero-workshop/nodejs/:/project/user-app dev.local/nodejs-express:SNAPSHOT
+Running command: docker cp nodejs-extract:/project /Users/myuser/.appsody/extract/nodejs
 Running command: docker rm nodejs-extract -f
-Project extracted to /Users/nastacio/workspace/kabanero-workshop/nodejs/tmp-extract
+Project extracted to /Users/myuser/workspace/kabanero-workshop/nodejs/tmp-extract
 ....
 
 Let’s take a look at the extracted project:
@@ -505,16 +505,16 @@ You should see output similar to the following:
 
 [source, role="no_copy"]
 ....
-drwxr-xr-x   10 nastacio  staff    320 Oct  3 17:55 .
-drwxr-xr-x   11 nastacio  staff    352 Oct  8 14:15 ..
--rw-r--r--    1 nastacio  staff     48 Oct  3 14:41 .dockerignore
--rw-r--r--    1 nastacio  staff    878 Oct  3 14:41 Dockerfile
-drwxr-xr-x  274 nastacio  staff   8768 Oct  3 17:55 node_modules
--rw-r--r--    1 nastacio  staff  92237 Oct  3 17:55 package-lock.json
--rw-r--r--    1 nastacio  staff    659 Oct  3 14:41 package.json
--rw-r--r--    1 nastacio  staff   1462 Oct  3 14:41 server.js
-drwxr-xr-x    3 nastacio  staff     96 Oct  3 14:41 test
-drwxr-xr-x   10 nastacio  staff    320 Oct  8 14:04 user-app
+drwxr-xr-x   10 myuser  staff    320 Oct  3 17:55 .
+drwxr-xr-x   11 myuser  staff    352 Oct  8 14:15 ..
+-rw-r--r--    1 myuser  staff     48 Oct  3 14:41 .dockerignore
+-rw-r--r--    1 myuser  staff    878 Oct  3 14:41 Dockerfile
+drwxr-xr-x  274 myuser  staff   8768 Oct  3 17:55 node_modules
+-rw-r--r--    1 myuser  staff  92237 Oct  3 17:55 package-lock.json
+-rw-r--r--    1 myuser  staff    659 Oct  3 14:41 package.json
+-rw-r--r--    1 myuser  staff   1462 Oct  3 14:41 server.js
+drwxr-xr-x    3 myuser  staff     96 Oct  3 14:41 test
+drwxr-xr-x   10 myuser  staff    320 Oct  8 14:04 user-app
 ....
 
 
@@ -534,4 +534,3 @@ project, using a curated and consistent dev and production environment.
 
 You have also seen how Appsody makes it really easy to build
 production-ready containers and deploy them to a Kubernetes environment.
-

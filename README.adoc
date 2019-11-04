@@ -49,6 +49,8 @@ include::prerequisites-raw.adoc[]
 include::appsody.adoc[]
 
 ifdef::include-codewind[]
+Let’s now take a look at Codewind.
+
 include::codewind.adoc[]
 endif::[]
 
