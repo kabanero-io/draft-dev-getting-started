@@ -48,13 +48,11 @@ quickest and simplest mechanism is to open a "Command Prompt" and
 issue the following commands:
 +
 ....
-mkdir %USERPROFILE%\.m2\repository
 mkdir %USERPROFILE%\.appsody
 mkdir %USERPROFILE%\workspace\kabanero-workshop
 
 set DOCKER_SHARED_DRIVE_USER=Developer
 
-icacls "%USERPROFILE%\.m2" /grant %DOCKER_SHARED_DRIVE_USER%:(OI)(CI)F
 icacls "%USERPROFILE%\.appsody" /grant %DOCKER_SHARED_DRIVE_USER%:(OI)(CI)F
 icacls "%USERPROFILE%\workspace" /grant %DOCKER_SHARED_DRIVE_USER%:(OI)(CI)F
 icacls "%USERPROFILE%\workspace\kabanero-workshop" /grant %DOCKER_SHARED_DRIVE_USER%:(OI)(CI)F
@@ -84,7 +82,6 @@ the following commands:
 ....
 set DOCKER_SHARED_DRIVE_USER=Developer
 
-icacls "%USERPROFILE%\.m2" /remove %DOCKER_SHARED_DRIVE_USER%
 icacls "%USERPROFILE%\.appsody" /remove %DOCKER_SHARED_DRIVE_USER%
 icacls "%USERPROFILE%\workspace" /remove %DOCKER_SHARED_DRIVE_USER%
 ....

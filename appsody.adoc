@@ -97,9 +97,10 @@ You should see an output similar to this:
 
 [source, role="no_copy"]
 ----
-NAME       	URL                                                                                          
-*appsodyhub https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml              
-kabanero    https://github.com/kabanero-io/collections/releases/latest/download/kabanero-index.yaml
+NAME        	URL                                                                                    
+*incubator  	https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml        
+experimental	https://github.com/appsody/stacks/releases/latest/download/experimental-index.yaml     
+kabanero    	https://github.com/kabanero-io/collections/releases/latest/download/kabanero-index.yaml
 ----
 
 `+Appsodyhub+` is the location where the appsody project releases its
@@ -108,14 +109,14 @@ instruct appsody to set the new kabanero repository as the default repository:
 
 [source, role="no_copy"]
 ----
-$ appsody repo set-default kabanero
-Your default repository is now set to kabanero
+appsody repo set-default kabanero
 
-$ appsody repo list
+appsody repo list
 
-NAME      	URL                                                                                          
-*kabanero   https://github.com/kabanero-io/collections/releases/latest/download/kabanero-index.yaml
-appsodyhub  https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml
+NAME        	URL                                                                                    
+*kabanero   	https://github.com/kabanero-io/collections/releases/latest/download/kabanero-index.yaml
+experimental	https://github.com/appsody/stacks/releases/latest/download/experimental-index.yaml     
+incubator   	https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml        
 ----
 
 
@@ -158,13 +159,12 @@ When the build completes, you should see something like:
 
 [source, role="no_copy"]
 ...
-[InitScript] [INFO] ------------------------------------------------------------------------
-[InitScript] [INFO] BUILD SUCCESS
-[InitScript] [INFO] ------------------------------------------------------------------------
-[InitScript] [INFO] Total time: 0.800 s
-[InitScript] [INFO] Finished at: 2019-09-02T15:52:41+01:00
-[InitScript] [INFO] ------------------------------------------------------------------------
-Successfully initialized Appsody project
+Digest: sha256:58754b1c7b329dfef65dfcd39aa5e497a7d52ba8080ac493f64cd2bee4785bc2
+Status: Downloaded newer image for kabanero/nodejs-express:0.2
+docker.io/kabanero/nodejs-express:0.2
+[Warning] The stack image does not contain APPSODY_PROJECT_DIR. Using /project
+Running command: docker run --rm --entrypoint /bin/bash docker.io/kabanero/nodejs-express:0.2 -c find /project -type f -name .appsody-init.sh
+Successfully initialized Appsody project with the kabanero/nodejs-express stack and the default template.
 
 
 ifdef::include-codewind[]
@@ -210,19 +210,16 @@ After a while you should see output similar to the following:
 
 [source, role="no_copy"]
 Running development environment...
-Using local cache for image kabanero/nodejs-express:0.2
-Running docker command: docker run --rm -P --name nodejs-dev -v /Users/myuser/workspace/kabanero-workshop/nodejs/:/project/user-app -v nodejs-deps:/project/user-app/node_modules -v /Users/myuser/.appsody/appsody-controller:/appsody/appsody-controller -t --entrypoint /appsody/appsody-controller kabanero/nodejs-express:0.2 --mode=run
-[Container] Running APPSODY_PREP command: npm install --prefix user-app
-audited 295 packages in 5.856s
-[Container] found 0 vulnerabilities
-[Container] 
+Pulling docker image docker.io/kabanero/nodejs-express:0.2
+Running command: docker pull docker.io/kabanero/nodejs-express:0.2
+...
 [Container] Running command:  npm start
 [Container] 
-[Container] > nodejs-express@0.2.6 start /project
+[Container] > nodejs-express@0.2.8 start /project
 [Container] > node server.js
 [Container] 
-[Container] [Wed Oct 30 00:10:40 2019] com.ibm.diagnostics.healthcenter.loader INFO: Node Application Metrics 5.0.5.201910041526 (Agent Core 4.0.5)
-[Container] [Wed Oct 30 00:10:41 2019] com.ibm.diagnostics.healthcenter.mqtt INFO: Connecting to broker localhost:1883
+[Container] [Mon Dec  9 14:55:23 2019] com.ibm.diagnostics.healthcenter.loader INFO: Node Application Metrics 5.1.1.201912041724 (Agent Core 4.0.5)
+[Container] [Mon Dec  9 14:55:24 2019] com.ibm.diagnostics.healthcenter.mqtt INFO: Connecting to broker localhost:1883
 [Container] App started on PORT 3000
 
 
@@ -261,11 +258,11 @@ and the application updated:
 [Container] Running command:  npm start
 [Container] [Warning] Wait Received error starting process of type APPSODY_RUN/DEBUG/TEST_ON_CHANGE while running command: npm start error received was: signal: interrupt
 [Container] 
-[Container] > nodejs-express@0.2.6 start /project
+[Container] > nodejs-express@0.2.8 start /project
 [Container] > node server.js
 [Container] 
-[Container] [Tue Oct  8 15:38:53 2019] com.ibm.diagnostics.healthcenter.loader INFO: Node Application Metrics 5.0.5.201910032155 (Agent Core 4.0.5)
-[Container] [Tue Oct  8 15:38:53 2019] com.ibm.diagnostics.healthcenter.mqtt INFO: Connecting to broker localhost:1883
+[Container] [Mon Dec  9 14:56:43 2019] com.ibm.diagnostics.healthcenter.loader INFO: Node Application Metrics 5.1.1.201912041724 (Agent Core 4.0.5)
+[Container] [Mon Dec  9 14:56:43 2019] com.ibm.diagnostics.healthcenter.mqtt INFO: Connecting to broker localhost:1883
 [Container] App started on PORT 3000
 
 
@@ -336,23 +333,20 @@ You should see an output similar to this:
 [source, role="no_copy"]
 --
 NAME                                    READY   STATUS    RESTARTS   AGE
-pod/appsody-operator-6bbddbd455-r65vp   1/1     Running   0          6m57s
-pod/nodejs-7d84ddc98d-r7bnj             1/1     Running   0          44s
+pod/appsody-operator-57b94c7c48-62x49   1/1     Running   0          108s
+pod/nodejs-5d577bb68-79824              1/1     Running   0          98s
 
-
-NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
-service/appsody-operator   ClusterIP   10.100.219.241   <none>        8383/TCP         6m51s
-service/kubernetes         ClusterIP   10.96.0.1        <none>        443/TCP          9m13s
-service/nodejs             NodePort    10.110.138.128   <none>        3000:30062/TCP   44s
-
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP          5d2h
+service/nodejs       NodePort    10.106.230.65   <none>        3000:31434/TCP   98s
 
 NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/appsody-operator   1/1     1            1           6m57s
-deployment.apps/nodejs             1/1     1            1           44s
+deployment.apps/appsody-operator   1/1     1            1           108s
+deployment.apps/nodejs             1/1     1            1           98s
 
 NAME                                          DESIRED   CURRENT   READY   AGE
-replicaset.apps/appsody-operator-6bbddbd455   1         1         1       6m57s
-replicaset.apps/nodejs-7d84ddc98d             1         1         1       44s
+replicaset.apps/appsody-operator-57b94c7c48   1         1         1       108s
+replicaset.apps/nodejs-5d577bb68              1         1         1       98s
 --
 
 The entries with `+nodejs+` correspond to Kubernetes resources
@@ -434,19 +428,16 @@ You should see output similar to this:
 [source, role="no_copy"]
 ....
 NAME                                    READY   STATUS    RESTARTS   AGE
-pod/appsody-operator-6bbddbd455-r65vp   1/1     Running   0          13m
+pod/appsody-operator-57b94c7c48-62x49   1/1     Running   0          3m31s
 
-
-NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
-service/appsody-operator   ClusterIP   10.100.219.241   <none>        8383/TCP   13m
-service/kubernetes         ClusterIP   10.96.0.1        <none>        443/TCP    15m
-
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   5d3h
 
 NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/appsody-operator   1/1     1            1           13m
+deployment.apps/appsody-operator   1/1     1            1           3m31s
 
 NAME                                          DESIRED   CURRENT   READY   AGE
-replicaset.apps/appsody-operator-6bbddbd455   1         1         1       13m
+replicaset.apps/appsody-operator-57b94c7c48   1         1         1       3m31s
 ....
 
 What if you decide you want to see the Container and Kubernetes
@@ -463,13 +454,14 @@ You should see output similar to:
 [source, role="no_copy"]
 ....
 Extracting project from development environment
-Pulling docker image dev.local/nodejs-express:SNAPSHOT
-Running command: docker pull dev.local/nodejs-express:SNAPSHOT
-Error response from daemon: Get https://dev.local/v2/: Service Unavailable
-[Warning] Docker image pull failed: exit status 1
-Using local cache for image dev.local/nodejs-express:SNAPSHOT
+Pulling docker image docker.io/kabanero/nodejs-express:0.2
+Running command: docker pull docker.io/kabanero/nodejs-express:0.2
+0.2: Pulling from kabanero/nodejs-express
+Digest: sha256:58754b1c7b329dfef65dfcd39aa5e497a7d52ba8080ac493f64cd2bee4785bc2
+Status: Image is up to date for kabanero/nodejs-express:0.2
+docker.io/kabanero/nodejs-express:0.2
 [Warning] The stack image does not contain APPSODY_PROJECT_DIR. Using /project
-Running command: docker create --name nodejs-extract -v /Users/myuser/workspace/kabanero-workshop/nodejs/:/project/user-app dev.local/nodejs-express:SNAPSHOT
+Running command: docker create --name nodejs-extract -v /Users/myuser/workspace/kabanero-workshop/nodejs/:/project/user-app index.docker.io/kabanero/nodejs-express:0.2
 Running command: docker cp nodejs-extract:/project /Users/myuser/.appsody/extract/nodejs
 Running command: docker rm nodejs-extract -f
 Project extracted to /Users/myuser/workspace/kabanero-workshop/nodejs/tmp-extract
@@ -505,16 +497,16 @@ You should see output similar to the following:
 
 [source, role="no_copy"]
 ....
-drwxr-xr-x   10 myuser  staff    320 Oct  3 17:55 .
-drwxr-xr-x   11 myuser  staff    352 Oct  8 14:15 ..
--rw-r--r--    1 myuser  staff     48 Oct  3 14:41 .dockerignore
--rw-r--r--    1 myuser  staff    878 Oct  3 14:41 Dockerfile
-drwxr-xr-x  274 myuser  staff   8768 Oct  3 17:55 node_modules
--rw-r--r--    1 myuser  staff  92237 Oct  3 17:55 package-lock.json
--rw-r--r--    1 myuser  staff    659 Oct  3 14:41 package.json
--rw-r--r--    1 myuser  staff   1462 Oct  3 14:41 server.js
-drwxr-xr-x    3 myuser  staff     96 Oct  3 14:41 test
-drwxr-xr-x   10 myuser  staff    320 Oct  8 14:04 user-app
+drwxr-xr-x   10 myuser  staff     320 Dec  4 12:25 .
+drwxr-xr-x   12 myuser  staff     384 Dec  9 10:06 ..
+-rw-rw-r--    1 myuser  staff      48 Dec  4 12:20 .dockerignore
+-rw-rw-r--    1 myuser  staff     883 Dec  4 12:20 Dockerfile
+drwxr-xr-x  297 myuser  staff    9504 Dec  4 12:25 node_modules
+-rw-r--r--    1 myuser  staff  102367 Dec  4 12:25 package-lock.json
+-rw-rw-r--    1 myuser  staff     659 Dec  4 12:20 package.json
+-rw-rw-r--    1 myuser  staff    1462 Dec  4 12:20 server.js
+drwxrwxr-x    3 myuser  staff      96 Dec  4 12:20 test
+drwxr-xr-x   11 myuser  staff     352 Dec  9 09:59 user-app
 ....
 
 
@@ -532,5 +524,5 @@ You have seen how Appsody
 `+stacks+` and `+templates+` make it easy to get started with a new
 project, using a curated and consistent dev and production environment.
 
-You have also seen how Appsody makes it really easy to build
+You have also seen how Appsody makes it easier to build
 production-ready containers and deploy them to a Kubernetes environment.
