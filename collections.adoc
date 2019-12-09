@@ -98,6 +98,7 @@ java-spring-boot2
 nodejs
 nodejs-express
 nodejs-loopback
+triggers
 ----
 
 This is the list of Kabanero collections, which each directory containing the folder
@@ -121,15 +122,6 @@ find . -type f
 ./image/project/package.json
 ./image/.dockerignore
 ./README.md
-./templates/skaffold/test/test.js
-./templates/skaffold/.gitignore
-./templates/skaffold/package-lock.json
-./templates/skaffold/package.json
-./templates/skaffold/.vscode/launch.json
-./templates/skaffold/.vscode/tasks.json
-./templates/skaffold/views/index.pug
-./templates/skaffold/routes/index.js
-./templates/skaffold/app.js
 ./templates/simple/test/test.js
 ./templates/simple/.gitignore
 ./templates/simple/package-lock.json
@@ -137,6 +129,15 @@ find . -type f
 ./templates/simple/.vscode/launch.json
 ./templates/simple/.vscode/tasks.json
 ./templates/simple/app.js
+./templates/scaffold/test/test.js
+./templates/scaffold/.gitignore
+./templates/scaffold/package-lock.json
+./templates/scaffold/package.json
+./templates/scaffold/.vscode/launch.json
+./templates/scaffold/.vscode/tasks.json
+./templates/scaffold/views/index.pug
+./templates/scaffold/routes/index.js
+./templates/scaffold/app.js
 ./collection.yaml
 ....
 
@@ -176,7 +177,7 @@ appsody stack package
 ```
 
 
-You will notice the presence of the new dev-local repository:
+You will notice the presence of the new dev.local repository:
 
 [source, role='command']
 ```
@@ -187,10 +188,10 @@ You should see:
 
 [source, role="no_copy"]
 ----
-NAME       	URL                                                                                          
-*appsodyhub	https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml              
-dev-local  	file:///Users/nastacio/.appsody/stacks/dev.local/index-dev-local.yaml                        
-kabanero   	https://github.com/kabanero-io/collections/releases/download/v0.2.0-beta1/kabanero-index.yaml
+*kabanero           	https://github.com/kabanero-io/collections/releases/latest/download/kabanero-index.yaml           
+dev.local           	file:///Users/nastacio/.appsody/stacks/dev.local/dev.local-index.yaml                             
+experimental        	https://github.com/appsody/stacks/releases/latest/download/experimental-index.yaml                
+incubator           	https://github.com/appsody/stacks/releases/latest/download/incubator-index.yaml                   
 ----
 
 Let’s see what stacks we now have available:
@@ -201,24 +202,32 @@ appsody list
 ```
 
 You should now see an entry for a stack called
-`+nodejs-express+` from the `+dev-local+` repository.
+`+nodejs-express+` from the `+dev.local+` repository.
 
 [source, role="no_copy"]
 --
-REPO       	ID               	VERSION  	TEMPLATES        	DESCRIPTION                                              
-*appsodyhub	java-microprofile	0.2.17   	*default         	Eclipse MicroProfile on Open Liberty & OpenJ9 using Maven
-*appsodyhub	java-spring-boot2	0.3.14   	*default, kotlin 	Spring Boot using OpenJ9 and Maven                       
-*appsodyhub	nodejs           	0.2.5    	*simple          	Runtime for Node.js applications                         
-*appsodyhub	nodejs-express   	0.2.7    	scaffold, *simple	Express web framework for Node.js                        
-*appsodyhub	nodejs-loopback  	0.1.5    	*scaffold        	LoopBack 4 API Framework for Node.js                     
-*appsodyhub	python-flask     	0.1.4    	*simple          	Flask web Framework for Python                           
-*appsodyhub	swift            	0.1.4    	*simple          	Runtime for Swift applications                           
-dev-local  	nodejs-express   	0.2.6    	*simple, skaffold	Express web framework for Node.js                        
-kabanero   	java-microprofile	0.2.14   	*default         	Eclipse MicroProfile on Open Liberty & OpenJ9 using Maven
-kabanero   	java-spring-boot2	0.3.13   	*default, kotlin 	Spring Boot using OpenJ9 and Maven                       
-kabanero   	nodejs           	0.2.5    	*simple          	Runtime for Node.js applications                         
-kabanero   	nodejs-express   	0.2.6    	*simple, skaffold	Express web framework for Node.js                        
-kabanero   	nodejs-loopback  	0.1.4    	*scaffold        	LoopBack 4 API Framework for Node.js
+REPO                	ID                       	VERSION  	TEMPLATES        	DESCRIPTION                                              
+dev.local           	nodejs-express           	0.2.8    	scaffold, *simple	Express web framework for Node.js                        
+experimental        	java-spring-boot2-liberty	0.1.11   	*default         	Spring Boot on Open Liberty & OpenJ9 using Maven         
+experimental        	nodejs-functions         	0.1.6    	*simple          	Serverless runtime for Node.js functions                 
+experimental        	quarkus                  	0.2.2    	*default         	Quarkus runtime for running Java applications            
+experimental        	rocket                   	0.1.0    	*simple          	Rocket web framework for Rust                            
+experimental        	rust                     	0.1.4    	*simple          	Runtime for Rust applications                            
+experimental        	vertx                    	0.1.4    	*default         	Eclipse Vert.x runtime for running Java applications     
+incubator           	java-microprofile        	0.2.21   	*default         	Eclipse MicroProfile on Open Liberty & OpenJ9 using Maven
+incubator           	java-spring-boot2        	0.3.19   	*default, kotlin 	Spring Boot using OpenJ9 and Maven                       
+incubator           	kitura                   	0.2.3    	*default         	Runtime for Kitura applications                          
+incubator           	nodejs                   	0.2.5    	*simple          	Runtime for Node.js applications                         
+incubator           	nodejs-express           	0.2.10   	scaffold, *simple	Express web framework for Node.js                        
+incubator           	nodejs-loopback          	0.1.8    	*scaffold        	LoopBack 4 API Framework for Node.js                     
+incubator           	python-flask             	0.1.6    	*simple          	Flask web Framework for Python                           
+incubator           	starter                  	0.1.1    	*simple          	Runnable starter stack, copy to create a new stack       
+incubator           	swift                    	0.2.3    	*simple          	Appsody runtime for Swift applications                   
+*kabanero           	java-microprofile        	0.2.19   	*default         	Eclipse MicroProfile on Open Liberty & OpenJ9 using Maven
+*kabanero           	java-spring-boot2        	0.3.18   	*default, kotlin 	Spring Boot using OpenJ9 and Maven                       
+*kabanero           	nodejs                   	0.2.6    	*simple          	Runtime for Node.js applications                         
+*kabanero           	nodejs-express           	0.2.8    	scaffold, *simple	Express web framework for Node.js                        
+*kabanero           	nodejs-loopback          	0.1.6    	*scaffold        	LoopBack 4 API Framework for Node.js                     
 --
 
 We are now ready to start customizing this local stack and creating sample applications 
@@ -324,7 +333,7 @@ workshop_dir=$(echo ~)"/workspace/kabanero-workshop"
 mkdir -p "${workshop_dir}/nodejs-local"
 cd "${workshop_dir}/nodejs-local"
 
-appsody init dev-local/nodejs-express
+appsody init dev.local/nodejs-express
 appsody run
 ```
 --
@@ -337,7 +346,7 @@ set workshop_dir="%USERPROFILE%\workspace\kabanero-workshop"
 mkdir "%workshop_dir%\nodejs-local"
 cd "%workshop_dir%\nodejs-local"
 
-appsody init dev-local/nodejs-express
+appsody init dev.local/nodejs-express
 appsody run
 ```
 --
@@ -500,7 +509,7 @@ stack:
 
 [source, role='command']
 ```
-appsody list dev-local
+appsody list dev.local
 ```
 
 Which should show the following output, where you notice the new "psqldb" template
@@ -509,7 +518,7 @@ in the "TEMPLATES" column:
 [source, role="no_copy"]
 ....
 REPO     	ID            	VERSION  	TEMPLATES                	DESCRIPTION                      
-dev-local	nodejs-express	0.2.6    	psqldb, *simple, skaffold	Express web framework for Node.js
+dev.local	nodejs-express	0.2.6    	psqldb, *simple, skaffold	Express web framework for Node.js
 ....
 
 Before testing our application, our next step is to instantiate a local PostgreSQL database. We will use a custom docker network for both the PostgreSQL database container and the application container, which makes it easier for the application container to locate the database container by hostname instead of IP address.
@@ -564,7 +573,7 @@ cd "%workshop_dir%\nodejs-db"
 All users:
 
 ....
-appsody init dev-local/nodejs-express psqldb
+appsody init dev.local/nodejs-express psqldb
 
 appsody run --network workshop_nw
 ....
@@ -771,10 +780,10 @@ is listed in the output of `+appsody list+`.
 
 [source, role="no_copy"]
 --
-appsody list dev-local 
+appsody list dev.local 
 
 REPO     	ID            	VERSION  	TEMPLATES                	DESCRIPTION                                         
-dev-local	nodejs-express	0.2.7    	psqldb, scaffold, *simple	Express web framework for Node.js          
+dev.local	nodejs-express	0.2.7    	psqldb, scaffold, *simple	Express web framework for Node.js          
 --
 
 Locate the stack metadata file for the stack;
@@ -813,19 +822,6 @@ be treated as an error:
     } \
 ...
 ----
-
-Before packaging the modified image, let's tag the original image
-with the minor version of the stack before the modifications:
-
-[source, role='command']
-```
-docker tag dev.local/nodejs-express:SNAPSHOT dev.local/nodejs-express:0.2
-```
-
-Note that this extra step of tagging an image with a version while
-making changes to stacks will no longer be required once Appsody
-https://github.com/appsody/appsody/issues/526[GitHub issue #526]
-is addressed.
 
 We can now proceed to package and tag the modified stack:
 

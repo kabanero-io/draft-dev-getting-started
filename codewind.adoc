@@ -41,31 +41,30 @@ image::/img/guide/kab-workshop-new-project.png[link="/img/guide/kab-workshop-new
 
 
 You should see a list of project types you can create. Select the
-`+Kabanero Collections+` group, then select `Appsody Node.js Express simple template`.
+`+Kabanero Collections+` group, then select `Kabanero Node.js Express simple template`.
 
 .New Node.js Express project 
 image::/img/guide/kab-workshop-codewind-new-nodejs.png[link="/img/guide/kab-workshop-codewind-new-nodejs.png" alt="New Node.js Express project"]
 
 In the next field give the project a name, e.g `+kabanero-node-project+`
 
-Press `+Enter+` to create the project.
+Press `+Enter+` to create the project. Codewind will prompt you for the parent location of the folder about to be created for the project. Select a folder and then click on "Select parent directory". 
 
-The project has been generated and will now be building. To see the
-progress, expand `+Codewind+` -> `+Projects+` and right click the menu
-options `+Show all logs+`:
+The project has been generated and Codewind will start to build it. To see the progress, expand `+Codewind+` -> `+Projects+` and right click the menu options `+Show all logs+`:
 
 After a little while you should see the following log message:
 
 [source, role="no_copy"]
 ....
-Removing intermediate container 13648583c48c
- ---> 6f9d1a63dd11
-Step 10/10 : CMD ["npm", "start"]
- ---> Running in 57255d64995d
-Removing intermediate container 57255d64995d
- ---> bab327cf0931
-Successfully built bab327cf0931
-Successfully tagged cw-kabaneronodeproject-55db2350-ea0d-11e9-b965-597841276b82:latest
+[Container] 
+[Container] Running command:  npm start
+[Container] 
+[Container] > nodejs-express@0.2.8 start /project
+[Container] > node server.js
+[Container] 
+[Container] [Mon Dec  9 16:07:14 2019] com.ibm.diagnostics.healthcenter.loader INFO: Node Application Metrics 5.1.1.201912041724 (Agent Core 4.0.5)
+[Container] [Mon Dec  9 16:07:14 2019] com.ibm.diagnostics.healthcenter.mqtt INFO: Connecting to broker localhost:1883
+[Container] App started on PORT 3000
 ....
 
 And the state for the project should change to `+Running+`:
@@ -122,11 +121,11 @@ like:
 
 [source, role="no_copy"]
 ....
-[Container] > nodejs-express@0.2.6 start /project
+[Container] > nodejs-express@0.2.8 start /project
 [Container] > node server.js
 [Container] 
-[Container]  Wed Oct  9 01:44:20 2019  com.ibm.diagnostics.healthcenter.loader INFO: Node Application Metrics 5.0.5.201910041526 (Agent Core 4.0.5)
-[Container]  Wed Oct  9 01:44:21 2019  com.ibm.diagnostics.healthcenter.mqtt INFO: Connecting to broker localhost:1883
+[Container] [Mon Dec  9 16:14:03 2019] com.ibm.diagnostics.healthcenter.loader INFO: Node Application Metrics 5.1.1.201912041724 (Agent Core 4.0.5)
+[Container] [Mon Dec  9 16:14:04 2019] com.ibm.diagnostics.healthcenter.mqtt INFO: Connecting to broker localhost:1883
 [Container] App started on PORT 3000
 ....
 
@@ -207,7 +206,7 @@ metrics dashboard you opened earlier. You should see spikes in the
 various measures.
 
 Let’s do some development and degrade the performance of the services.
-Update the `+GET+` method with the following and save the file. As
+Update the `+GET+` function in `app.js` with the following content and save the file. As
 before, the application will be automatically updated:
 
 [source,java]
@@ -250,7 +249,7 @@ deploy the application to Kubernetes using:
 --
 [source, role='command']
 ....
-cd ~/codewind-workspace/kabanero-node-project
+cd <parent directory location>/kabanero-node-project
 appsody deploy
 ....
 --
@@ -259,7 +258,7 @@ appsody deploy
 --
 [source, role='command']
 ....
-cd c:\codewind-workspace\kabanero-node-project
+cd <parent directory location>\kabanero-node-project
 appsody deploy
 ....
 --
